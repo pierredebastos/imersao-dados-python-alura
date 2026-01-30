@@ -32,14 +32,20 @@ contratos_selecionados = st.sidebar.multiselect("Tipo de Contrato", contratos_di
 tamanhos_disponiveis = sorted(df['tamanho_empresa'].unique())
 tamanhos_selecionados = st.sidebar.multiselect("Tamanho da Empresa", tamanhos_disponiveis, default=tamanhos_disponiveis)
 
+
 # --- Filtragem do DataFrame ---
 # O dataframe principal é filtrado com base nas seleções feitas na barra lateral.
-df_filtrado = df[
+if  anos_selecionados and senioridades_selecionadas and contratos_selecionados and tamanhos_selecionados:
+    df_filtrado = df[
     (df['ano'].isin(anos_selecionados)) &
     (df['senioridade'].isin(senioridades_selecionadas)) &
     (df['contrato'].isin(contratos_selecionados)) &
     (df['tamanho_empresa'].isin(tamanhos_selecionados))
 ]
+else:
+    df_filtrado = pd.DataFrame(columns=df.columns)  # DataFrame vazio se nenhum filtro for selecionado
+    st.warning("Por favor, selecione pelo menos uma opção em cada filtro para visualizar os dados.")
+    raise ValueError("Nenhum filtro selecionado.")
 
 # --- Conteúdo Principal ---
 st.title("🎲 Dashboard de Análise de Salários na Área de Dados")
